@@ -78,6 +78,11 @@ categoriesRouter.patch("/:id", requireAdmin, async (req: AuthedRequest, res) => 
 });
 
 categoriesRouter.delete("/:id", requireAdmin, async (req, res) => {
+  const childCount = await Category.countDocuments({ parent: req.params.id });
+  if (childCount > 0) {
+    res.status(400).json({ error: "Delete subcategories first, or reassign them." });
+    return;
+  }
   const r = await Category.deleteOne({ _id: req.params.id });
   if (r.deletedCount === 0) {
     res.status(404).json({ error: "Not found" });

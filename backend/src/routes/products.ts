@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Types } from "mongoose";
 import { z } from "zod";
 import type { AuthedRequest } from "../middleware/requireAdmin.js";
 import { requireAdmin } from "../middleware/requireAdmin.js";
@@ -7,6 +8,17 @@ import { Product } from "../models/Product.js";
 import { uniqueSlug } from "../utils/slug.js";
 
 export const productsRouter = Router();
+
+async function assertSubcategoryBelongsToCategory(categoryId: Types.ObjectId, subcategoryId: Types.ObjectId | null) {
+  if (!subcategoryId) return;
+  const sub = await Category.findById(subcategoryId).lean();
+  if (!sub || !sub.parent) {
+    throw new Error("Invalid subcategory");
+  }
+  if (String(sub.parent) !== String(categoryId)) {
+    throw new Error("Subcategory must belong to the selected main category");
+  }
+}
 
 const variantSchema = z.object({
   sku: z.string().optional(),
@@ -24,6 +36,7 @@ const productBody = z.object({
   compareAtPrice: z.number().min(0).nullable().optional(),
   images: z.array(z.string().min(1)).optional(),
   category: z.string().min(1),
+  subcategory: z.union([z.string().min(1), z.null()]).optional(),
   published: z.boolean().optional(),
   variants: z.array(variantSchema).optional(),
 });
@@ -31,6 +44,7 @@ const productBody = z.object({
 productsRouter.get("/by-slug/:slug", async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug, published: true })
     .populate("category")
+    .populate("subcategory")
     .lean();
   if (!product) {
     res.status(404).json({ error: "Not found" });
@@ -54,15 +68,17 @@ productsRouter.get("/collection/:categorySlug", async (req, res) => {
         : sort === "bestselling"
           ? { createdAt: -1 as const }
           : { createdAt: -1 as const };
-  const items = await Product.find({ category: cat._id, published: true })
-    .sort(sortKey)
-    .populate("category")
-    .lean();
+  const isChild = Boolean(cat.parent);
+  const filter = isChild
+    ? { published: true, subcategory: cat._id }
+    : { published: true, category: cat._id };
+
+  const items = await Product.find(filter).sort(sortKey).populate("category").populate("subcategory").lean();
   res.json({ category: cat, products: items });
 });
 
 productsRouter.get("/", requireAdmin, async (_req, res) => {
-  const items = await Product.find().sort({ updatedAt: -1 }).populate("category").lean();
+  const items = await Product.find().sort({ updatedAt: -1 }).populate("category").populate("subcategory").lean();
   res.json(items);
 });
 
@@ -77,6 +93,16 @@ productsRouter.post("/", requireAdmin, async (req: AuthedRequest, res) => {
     res.status(400).json({ error: "Invalid category" });
     return;
   }
+  let subcategory: Types.ObjectId | null = null;
+  if (parsed.data.subcategory) {
+    try {
+      await assertSubcategoryBelongsToCategory(category._id, new Types.ObjectId(parsed.data.subcategory));
+      subcategory = new Types.ObjectId(parsed.data.subcategory);
+    } catch (e) {
+      res.status(400).json({ error: e instanceof Error ? e.message : "Invalid subcategory" });
+      return;
+    }
+  }
   const slug = parsed.data.slug?.trim()
     ? await uniqueSlug(Product, parsed.data.slug)
     : await uniqueSlug(Product, parsed.data.name);
@@ -88,10 +114,11 @@ productsRouter.post("/", requireAdmin, async (req: AuthedRequest, res) => {
     compareAtPrice: parsed.data.compareAtPrice ?? null,
     images: parsed.data.images ?? [],
     category: category._id,
+    subcategory,
     published: parsed.data.published ?? false,
     variants: parsed.data.variants ?? [],
   });
-  res.status(201).json(await doc.populate("category"));
+  res.status(201).json(await doc.populate("category").populate("subcategory"));
 });
 
 productsRouter.patch("/:id", requireAdmin, async (req: AuthedRequest, res) => {
@@ -113,6 +140,19 @@ productsRouter.patch("/:id", requireAdmin, async (req: AuthedRequest, res) => {
     }
     doc.category = category._id;
   }
+  if (parsed.data.subcategory !== undefined) {
+    if (parsed.data.subcategory === null) {
+      doc.subcategory = null;
+    } else {
+      try {
+        await assertSubcategoryBelongsToCategory(doc.category, new Types.ObjectId(parsed.data.subcategory));
+        doc.subcategory = new Types.ObjectId(parsed.data.subcategory);
+      } catch (e) {
+        res.status(400).json({ error: e instanceof Error ? e.message : "Invalid subcategory" });
+        return;
+      }
+    }
+  }
   if (parsed.data.name !== undefined) doc.name = parsed.data.name;
   if (parsed.data.description !== undefined) doc.description = parsed.data.description;
   if (parsed.data.price !== undefined) doc.price = parsed.data.price;
@@ -125,8 +165,15 @@ productsRouter.patch("/:id", requireAdmin, async (req: AuthedRequest, res) => {
   } else if (parsed.data.name !== undefined) {
     doc.slug = await uniqueSlug(Product, parsed.data.name, String(doc._id));
   }
+  if (doc.subcategory) {
+    try {
+      await assertSubcategoryBelongsToCategory(doc.category, doc.subcategory as Types.ObjectId);
+    } catch {
+      doc.subcategory = null;
+    }
+  }
   await doc.save();
-  res.json(await doc.populate("category"));
+  res.json(await doc.populate("category").populate("subcategory"));
 });
 
 productsRouter.delete("/:id", requireAdmin, async (req, res) => {

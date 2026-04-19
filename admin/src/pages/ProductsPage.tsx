@@ -8,6 +8,12 @@ function catName(p: Product) {
   return typeof c === "object" && c && "name" in c ? c.name : "—";
 }
 
+function subName(p: Product) {
+  const s = p.subcategory;
+  if (!s) return "—";
+  return typeof s === "object" && "name" in s ? s.name : "—";
+}
+
 export default function ProductsPage() {
   const [items, setItems] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +42,7 @@ export default function ProductsPage() {
               <th />
               <th>Name</th>
               <th>Category</th>
+              <th>Sub</th>
               <th>Price</th>
               <th>Status</th>
               <th />
@@ -53,6 +60,7 @@ export default function ProductsPage() {
                 </td>
                 <td>{p.name}</td>
                 <td>{catName(p)}</td>
+                <td>{subName(p)}</td>
                 <td>Rs. {p.price}</td>
                 <td>
                   <span className="pill">{p.published ? "Published" : "Draft"}</span>

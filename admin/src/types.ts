@@ -23,6 +23,7 @@ export type Product = {
   compareAtPrice?: number | null;
   images: string[];
   category: Category | string;
+  subcategory?: Category | string | null;
   published: boolean;
   variants: ProductVariant[];
 };

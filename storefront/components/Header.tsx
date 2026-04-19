@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Category } from "@/lib/types";
 import { cartCount, readCart } from "@/lib/cart";
-import { IconCart, IconChevronDown, IconSearch, IconUser } from "./icons";
+import { IconCart, IconSearch, IconUser } from "./icons";
+import LogoMark from "./LogoMark";
+import MegaNav from "./MegaNav";
 
 export default function Header({ categories }: { categories: Category[] }) {
   const pathname = usePathname();
@@ -34,7 +36,7 @@ export default function Header({ categories }: { categories: Category[] }) {
           </button>
         </div>
         <Link href="/" className="logo-mark" aria-label="Zack Wears home">
-          <span className="logo-letter">Z</span>
+          <LogoMark />
         </Link>
         <div className="header-right">
           <Link href="/account" className="icon-btn" aria-label="Account">
@@ -62,14 +64,7 @@ export default function Header({ categories }: { categories: Category[] }) {
         </div>
       ) : null}
 
-      <nav className="container main-nav" aria-label="Shop">
-        {categories.map((c) => (
-          <Link key={c._id} href={`/collections/${c.slug}`} className="main-nav-link">
-            <span>{c.name.toUpperCase()}</span>
-            <IconChevronDown className="nav-chevron" />
-          </Link>
-        ))}
-      </nav>
+      <MegaNav categories={categories} />
 
       <div className="promo">7% OFF ON ADVANCE PAYMENT ORDERS</div>
     </header>

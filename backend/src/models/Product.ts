@@ -16,6 +16,7 @@ export type ProductDoc = mongoose.Document & {
   compareAtPrice?: number | null;
   images: string[];
   category: Types.ObjectId;
+  subcategory?: Types.ObjectId | null;
   published: boolean;
   variants: ProductVariant[];
 };
@@ -40,6 +41,7 @@ const productSchema = new Schema<ProductDoc>(
     compareAtPrice: { type: Number, default: null, min: 0 },
     images: { type: [String], default: [] },
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    subcategory: { type: Schema.Types.ObjectId, ref: "Category", default: null },
     published: { type: Boolean, default: false },
     variants: { type: [variantSchema], default: [] },
   },
@@ -47,6 +49,7 @@ const productSchema = new Schema<ProductDoc>(
 );
 
 productSchema.index({ category: 1, published: 1 });
+productSchema.index({ subcategory: 1, published: 1 });
 productSchema.index({ name: "text", description: "text" });
 
 export const Product = mongoose.model<ProductDoc>("Product", productSchema);

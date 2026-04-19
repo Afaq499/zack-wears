@@ -17,16 +17,24 @@ export default function ProductEditPage() {
   const [price, setPrice] = useState("0");
   const [compareAt, setCompareAt] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [subcategoryId, setSubcategoryId] = useState("");
   const [published, setPublished] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [variants, setVariants] = useState<ProductVariant[]>([emptyVariant()]);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
+  const rootCategories = useMemo(() => categories.filter((c) => !c.parent), [categories]);
+  const subcategories = useMemo(
+    () => categories.filter((c) => c.parent && String(c.parent) === categoryId),
+    [categories, categoryId]
+  );
+
   useEffect(() => {
     api<Category[]>("/api/categories").then((c) => {
       setCategories(c);
-      if (!categoryId && c[0]) setCategoryId(c[0]._id);
+      const roots = c.filter((x) => !x.parent);
+      if (!categoryId && roots[0]) setCategoryId(roots[0]._id);
     });
   }, []);
 
@@ -47,6 +55,13 @@ export default function ProductEditPage() {
         setCompareAt(p.compareAtPrice != null ? String(p.compareAtPrice) : "");
         const cid = typeof p.category === "object" && p.category ? p.category._id : String(p.category);
         setCategoryId(cid);
+        const sid =
+          p.subcategory && typeof p.subcategory === "object" && "_id" in p.subcategory
+            ? (p.subcategory as { _id: string })._id
+            : p.subcategory
+              ? String(p.subcategory)
+              : "";
+        setSubcategoryId(sid);
         setPublished(p.published);
         setImages(p.images || []);
         setVariants(p.variants?.length ? p.variants : [emptyVariant()]);
@@ -87,6 +102,7 @@ export default function ProductEditPage() {
       price: Number(price),
       compareAtPrice: compareNum,
       category: categoryId,
+      subcategory: subcategoryId || null,
       published,
       images,
       variants: variants
@@ -158,14 +174,37 @@ export default function ProductEditPage() {
           </div>
         </div>
         <div className="stack">
-          <label>Category</label>
-          <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required>
-            {categories.map((c) => (
+          <label>Main category</label>
+          <select
+            value={categoryId}
+            onChange={(e) => {
+              setCategoryId(e.target.value);
+              setSubcategoryId("");
+            }}
+            required
+          >
+            {rootCategories.map((c) => (
               <option key={c._id} value={c._id}>
                 {c.name} ({c.slug})
               </option>
             ))}
           </select>
+        </div>
+        <div className="stack">
+          <label>Subcategory (optional)</label>
+          <select value={subcategoryId} onChange={(e) => setSubcategoryId(e.target.value)}>
+            <option value="">None</option>
+            {subcategories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name} ({c.slug})
+              </option>
+            ))}
+          </select>
+          {subcategories.length === 0 ? (
+            <p className="muted" style={{ margin: 0, fontSize: 13 }}>
+              Create subcategories in <strong>Categories</strong> with this main category as parent.
+            </p>
+          ) : null}
         </div>
         <label className="row" style={{ gap: "0.5rem" }}>
           <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
