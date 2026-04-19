@@ -423,6 +423,172 @@ img {
   margin-right: 0.4rem;
 }
 
+/* —— Home feed (main category → product rows) —— */
+.home-feed {
+  padding: 2rem 0 3.5rem;
+}
+
+.home-section {
+  margin-bottom: 2.75rem;
+}
+
+.home-section:last-of-type {
+  margin-bottom: 1.5rem;
+}
+
+.home-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0 1.35rem;
+  max-width: 1280px;
+  margin: 0 auto 1rem;
+}
+
+.home-section-title {
+  margin: 0;
+  font-size: clamp(0.82rem, 1.4vw, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.home-section-all {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-decoration: underline !important;
+  color: #333;
+}
+
+.home-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0 1.35rem 0.35rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.home-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.home-scroll::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border-radius: 4px;
+}
+
+.home-tile {
+  flex: 0 0 clamp(168px, 42vw, 240px);
+  scroll-snap-align: start;
+}
+
+@media (min-width: 1100px) {
+  .home-scroll {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.1rem;
+    overflow-x: visible;
+    padding-left: 1.35rem;
+    padding-right: 1.35rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    scroll-snap-type: none;
+  }
+
+  .home-tile {
+    flex: none;
+    min-width: 0;
+  }
+}
+
+.home-tile-link {
+  display: block;
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.home-tile-link:hover .home-tile-img {
+  opacity: 0.94;
+}
+
+.home-tile-img-wrap {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: #f4f4f4;
+  overflow: hidden;
+}
+
+.home-tile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-tile-ph {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #ececec, #f9f9f9);
+}
+
+.home-tile-badge {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  background: #111;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.5rem;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+.home-tile-body {
+  padding: 0.85rem 0.2rem 0.15rem;
+  text-align: center;
+}
+
+.home-tile-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.home-tile-prices {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.35rem 0.55rem;
+  font-size: 0.8rem;
+}
+
+.home-tile-was {
+  text-decoration: line-through;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.home-tile-now {
+  font-weight: 700;
+}
+
+.home-tile-save {
+  color: #b00020;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
 .badge {
   position: absolute;
   top: 0.55rem;

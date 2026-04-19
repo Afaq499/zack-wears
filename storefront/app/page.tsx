@@ -1,77 +1,50 @@
-import Link from "next/link";
 import HeroCarousel from "@/components/HeroCarousel";
-import { getCategories } from "@/lib/api";
+import HomeCategorySection from "@/components/HomeCategorySection";
+import { getCategories, getCollection } from "@/lib/api";
 import { buildNavTree } from "@/lib/navTree";
+import type { Category, Product } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+const PRODUCTS_PER_SECTION = 5;
+
 export default async function HomePage() {
-  let categories: Awaited<ReturnType<typeof getCategories>> = [];
+  let categories: Category[] = [];
   try {
     categories = await getCategories();
   } catch {
     categories = [];
   }
-  const { roots } = buildNavTree(categories);
+
+  const { roots: treeRoots } = buildNavTree(categories);
+  const roots = treeRoots.length > 0 ? treeRoots : categories;
+
+  const sections: { category: Category; products: Product[] }[] = [];
+  for (const cat of roots) {
+    try {
+      const { products } = await getCollection(cat.slug, "bestselling");
+      sections.push({ category: cat, products: products.slice(0, PRODUCTS_PER_SECTION) });
+    } catch {
+      sections.push({ category: cat, products: [] });
+    }
+  }
+
+  const visible = sections.filter((s) => s.products.length > 0);
 
   return (
     <>
       <HeroCarousel />
-      <main className="container" style={{ padding: "2.5rem 0 3.5rem" }}>
-        <h2
-          style={{
-            textAlign: "center",
-            fontSize: "clamp(1.1rem, 2vw, 1.35rem)",
-            fontWeight: 700,
-            letterSpacing: "0.12em",
-            margin: "0 0 1.5rem",
-          }}
-        >
-          SHOP BY COLLECTION
-        </h2>
-        <div className="grid">
-          {roots.length > 0
-            ? roots.map((c) => (
-                <Link key={c._id} href={`/collections/${c.slug}`} className="product-tile product-tile-link">
-                  <div
-                    className="product-tile-img-wrap"
-                    style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 140 }}
-                  >
-                    <span style={{ fontSize: "2.25rem", fontWeight: 700, letterSpacing: "0.12em", color: "#ccc" }}>
-                      {c.name.slice(0, 1)}
-                    </span>
-                  </div>
-                  <div className="product-tile-meta">
-                    <div className="product-tile-title">{c.name}</div>
-                    <div className="product-tile-price muted" style={{ fontWeight: 500, fontSize: "0.8rem" }}>
-                      View all
-                    </div>
-                  </div>
-                </Link>
-              ))
-            : categories.map((c) => (
-                <Link key={c._id} href={`/collections/${c.slug}`} className="product-tile product-tile-link">
-                  <div
-                    className="product-tile-img-wrap"
-                    style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 140 }}
-                  >
-                    <span style={{ fontSize: "2.25rem", fontWeight: 700, letterSpacing: "0.12em", color: "#ccc" }}>
-                      {c.name.slice(0, 1)}
-                    </span>
-                  </div>
-                  <div className="product-tile-meta">
-                    <div className="product-tile-title">{c.name}</div>
-                    <div className="product-tile-price muted" style={{ fontWeight: 500, fontSize: "0.8rem" }}>
-                      View collection
-                    </div>
-                  </div>
-                </Link>
-              ))}
-        </div>
-        <p className="muted" style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.88rem", maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
-          Use the menu above: hover a main category to open subcategories, or click through to product lists. Assign a <strong>main category</strong> and optional{" "}
-          <strong>subcategory</strong> when editing products in admin.
-        </p>
+      <main className="home-feed">
+        {visible.length === 0 ? (
+          <div className="container muted" style={{ padding: "2rem 1.35rem", textAlign: "center", maxWidth: 520, margin: "0 auto" }}>
+            <p style={{ marginTop: 0 }}>
+              No published products yet. Add products in the admin, assign them to a <strong>main category</strong>, and publish them — they will appear here in
+              rows of five per category.
+            </p>
+          </div>
+        ) : (
+          visible.map((s) => <HomeCategorySection key={s.category._id} category={s.category} products={s.products} />)
+        )}
       </main>
     </>
   );

@@ -118,7 +118,9 @@ productsRouter.post("/", requireAdmin, async (req: AuthedRequest, res) => {
     published: parsed.data.published ?? false,
     variants: parsed.data.variants ?? [],
   });
-  res.status(201).json(await doc.populate("category").populate("subcategory"));
+  await doc.populate("category");
+  await doc.populate("subcategory");
+  res.status(201).json(doc);
 });
 
 productsRouter.patch("/:id", requireAdmin, async (req: AuthedRequest, res) => {
@@ -173,7 +175,9 @@ productsRouter.patch("/:id", requireAdmin, async (req: AuthedRequest, res) => {
     }
   }
   await doc.save();
-  res.json(await doc.populate("category").populate("subcategory"));
+  await doc.populate("category");
+  await doc.populate("subcategory");
+  res.json(doc);
 });
 
 productsRouter.delete("/:id", requireAdmin, async (req, res) => {
