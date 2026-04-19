@@ -60,14 +60,10 @@ productsRouter.get("/collection/:categorySlug", async (req, res) => {
     return;
   }
   const sort = (req.query.sort as string) || "newest";
-  const sortKey =
-    sort === "price-asc"
-      ? { price: 1 as const }
-      : sort === "price-desc"
-        ? { price: -1 as const }
-        : sort === "bestselling"
-          ? { createdAt: -1 as const }
-          : { createdAt: -1 as const };
+  let sortKey: Record<string, 1 | -1>;
+  if (sort === "price-asc") sortKey = { price: 1 };
+  else if (sort === "price-desc") sortKey = { price: -1 };
+  else sortKey = { createdAt: -1 };
   const isChild = Boolean(cat.parent);
   const filter = isChild
     ? { published: true, subcategory: cat._id }
