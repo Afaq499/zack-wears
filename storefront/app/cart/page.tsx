@@ -27,8 +27,17 @@ export default function CartPage() {
   }
 
   return (
-    <main className="container" style={{ padding: "1.5rem 0 3rem" }}>
-      <h1 style={{ marginTop: 0, textAlign: "center", letterSpacing: "0.12em" }}>CART</h1>
+    <main>
+      <div className="cart-incentives">
+        <div className="container cart-incentives-inner">
+          <p>Buy more to unlock rewards at checkout.</p>
+          <div className="progress-track" aria-hidden>
+            <div className="progress-fill" />
+          </div>
+        </div>
+      </div>
+      <div className="container" style={{ padding: "1.25rem 0 3rem" }}>
+      <h1 style={{ marginTop: 0, textAlign: "center", letterSpacing: "0.18em", fontSize: "1.65rem", fontWeight: 800 }}>CART</h1>
       <p style={{ textAlign: "center", marginTop: "-0.25rem" }}>
         <Link href="/" className="muted">
           Continue shopping
@@ -88,6 +97,7 @@ export default function CartPage() {
           </aside>
         </div>
       )}
+      </div>
     </main>
   );
 }

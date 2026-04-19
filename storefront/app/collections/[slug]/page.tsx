@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import { getCategoryBySlug, getCollection } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<{ sort?: string }> };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -23,7 +25,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CollectionPage(props: Props) {
   const { slug } = await props.params;
   const sp = (await props.searchParams) ?? {};
-  const sort = sp.sort || "newest";
+  const sort = sp.sort || "bestselling";
 
   let data: Awaited<ReturnType<typeof getCollection>>;
   try {
@@ -34,24 +36,23 @@ export default async function CollectionPage(props: Props) {
   const { category, products } = data;
 
   return (
-    <main className="container" style={{ padding: "1.5rem 0 3rem" }}>
+    <main className="container" style={{ padding: "0.5rem 0 3rem" }}>
       <div className="toolbar">
         <div>
-          <h1 style={{ margin: 0 }}>{category.name}</h1>
-          <p className="muted" style={{ margin: "0.35rem 0 0" }}>
+          <h1 className="collection-title">{category.name}</h1>
+          <p className="collection-count">
             {products.length} product{products.length === 1 ? "" : "s"}
           </p>
         </div>
-        <form method="get" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <label className="muted" htmlFor="sort" style={{ fontSize: 14 }}>
-            Sort
-          </label>
-          <select id="sort" name="sort" defaultValue={sort}>
+        <form method="get" className="sort-row">
+          <label htmlFor="sort">Sort by</label>
+          <select id="sort" name="sort" className="sort-select" defaultValue={sort}>
+            <option value="bestselling">Best selling</option>
             <option value="newest">Newest</option>
-            <option value="price-asc">Price: low to high</option>
-            <option value="price-desc">Price: high to low</option>
+            <option value="price-asc">Price, low to high</option>
+            <option value="price-desc">Price, high to low</option>
           </select>
-          <button className="btn secondary" type="submit">
+          <button type="submit" className="btn secondary btn-compact">
             Apply
           </button>
         </form>
@@ -64,14 +65,15 @@ export default async function CollectionPage(props: Props) {
       </div>
 
       {products.length === 0 ? (
-        <p className="muted">
-          No products yet. Publish products in the admin portal for this category.
+        <p className="muted" style={{ maxWidth: 520 }}>
+          No products in this collection. In the admin, set the product category to <strong>{category.name}</strong> and
+          enable <strong>Published</strong>, then open this page again (updates appear immediately).
         </p>
       ) : null}
 
-      <p style={{ marginTop: "2rem" }}>
-        <Link href="/" className="muted">
-          ← Continue shopping
+      <p style={{ marginTop: "2.5rem" }}>
+        <Link href="/" className="muted" style={{ fontSize: "0.88rem" }}>
+          Continue shopping
         </Link>
       </p>
     </main>

@@ -47,7 +47,13 @@ productsRouter.get("/collection/:categorySlug", async (req, res) => {
   }
   const sort = (req.query.sort as string) || "newest";
   const sortKey =
-    sort === "price-asc" ? { price: 1 as const } : sort === "price-desc" ? { price: -1 as const } : { createdAt: -1 as const };
+    sort === "price-asc"
+      ? { price: 1 as const }
+      : sort === "price-desc"
+        ? { price: -1 as const }
+        : sort === "bestselling"
+          ? { createdAt: -1 as const }
+          : { createdAt: -1 as const };
   const items = await Product.find({ category: cat._id, published: true })
     .sort(sortKey)
     .populate("category")

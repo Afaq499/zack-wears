@@ -5,10 +5,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { Category } from "@/lib/types";
 import { cartCount, readCart } from "@/lib/cart";
+import { IconCart, IconChevronDown, IconSearch, IconUser } from "./icons";
 
 export default function Header({ categories }: { categories: Category[] }) {
   const pathname = usePathname();
   const [count, setCount] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     function refresh() {
@@ -25,29 +27,50 @@ export default function Header({ categories }: { categories: Category[] }) {
 
   return (
     <header className="site-header">
-      <div className="container inner">
-        <Link href="/" className="logo" aria-label="Home">
-          ZACK WEARS
+      <div className="container header-top">
+        <div className="header-left">
+          <button type="button" className="icon-btn" aria-label="Search" aria-expanded={searchOpen} onClick={() => setSearchOpen((v) => !v)}>
+            <IconSearch />
+          </button>
+        </div>
+        <Link href="/" className="logo-mark" aria-label="Zack Wears home">
+          <span className="logo-letter">Z</span>
         </Link>
-        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <span style={{ color: "var(--muted)", fontSize: 14 }}>Search</span>
-          <Link href="/cart" style={{ position: "relative", fontWeight: 600 }}>
-            Cart
-            {count > 0 ? (
-              <span className="pill" style={{ position: "absolute", top: -10, right: -14 }}>
-                {count > 99 ? "99+" : count}
-              </span>
-            ) : null}
+        <div className="header-right">
+          <Link href="/account" className="icon-btn" aria-label="Account">
+            <IconUser />
+          </Link>
+          <Link href="/cart" className="icon-btn icon-btn-cart" aria-label="Shopping cart">
+            <IconCart />
+            <span className="cart-badge" aria-live="polite">
+              {count > 99 ? "99+" : count}
+            </span>
           </Link>
         </div>
       </div>
-      <div className="container nav">
+
+      {searchOpen ? (
+        <div className="search-pop">
+          <div className="container">
+            <form action="/" method="get" className="search-pop-form" onSubmit={() => setSearchOpen(false)}>
+              <input type="search" name="q" placeholder="Search collections…" className="search-input" aria-label="Search" />
+              <button type="submit" className="btn btn-compact">
+                Search
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : null}
+
+      <nav className="container main-nav" aria-label="Shop">
         {categories.map((c) => (
-          <Link key={c._id} href={`/collections/${c.slug}`}>
-            {c.name}
+          <Link key={c._id} href={`/collections/${c.slug}`} className="main-nav-link">
+            <span>{c.name.toUpperCase()}</span>
+            <IconChevronDown className="nav-chevron" />
           </Link>
         ))}
-      </div>
+      </nav>
+
       <div className="promo">7% OFF ON ADVANCE PAYMENT ORDERS</div>
     </header>
   );

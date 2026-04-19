@@ -2,12 +2,12 @@ import type { Category, CollectionResponse, Product } from "./types";
 
 const base = () => (process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000").replace(/\/$/, "");
 
-async function getJson<T>(path: string, init?: RequestInit & { next?: { revalidate?: number } }): Promise<T> {
+async function getJson<T>(path: string, init?: RequestInit): Promise<T> {
   const url = `${base()}${path}`;
   const res = await fetch(url, {
     ...init,
     headers: { Accept: "application/json", ...(init?.headers || {}) },
-    next: init?.next ?? { revalidate: 60 },
+    cache: "no-store",
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return res.json() as Promise<T>;

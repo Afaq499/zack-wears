@@ -7,7 +7,7 @@ function firstImage(p: Product) {
 
 function isSoldOut(p: Product) {
   if (!p.variants?.length) return false;
-  const total = p.variants.reduce((n, v) => n + (v.stock || 0), 0);
+  const total = p.variants.reduce((n, v) => n + (Number(v.stock) || 0), 0);
   return total <= 0;
 }
 
@@ -22,24 +22,24 @@ export default function ProductCard({ product, collectionSlug }: { product: Prod
   const href = `/collections/${collectionSlug}/products/${product.slug}`;
 
   return (
-    <article className="card" style={{ position: "relative" }}>
-      <Link href={href} style={{ display: "block" }}>
-        <div style={{ aspectRatio: "1 / 1", background: "#f4f4f4" }}>
+    <article className="product-tile">
+      <Link href={href} className="product-tile-link">
+        <div className="product-tile-img-wrap">
           {img ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={img} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : null}
         </div>
-        <div className="meta">
-          <div style={{ fontWeight: 650 }}>{product.name}</div>
-          <div className="price" style={{ marginTop: 6 }}>
+        <div className="product-tile-meta">
+          <div className="product-tile-title">{product.name}</div>
+          <div className="product-tile-price">
             {sale ? <span className="was">Rs. {product.compareAtPrice}</span> : null}
             <span>Rs. {product.price}</span>
           </div>
         </div>
       </Link>
       {soldOut ? (
-        <span className="badge" style={{ background: "#666" }}>
+        <span className="badge" style={{ background: "#555" }}>
           Sold out
         </span>
       ) : sale ? (

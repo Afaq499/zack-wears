@@ -35,63 +35,193 @@ img {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 1.35rem;
 }
 
+/* —— Header (Fitteez-style) —— */
 .site-header {
-  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
-  z-index: 20;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
 }
 
-.site-header .inner {
+.header-top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0.55rem 0 0.15rem;
+  min-height: 52px;
+}
+
+.header-left {
+  justify-self: start;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.85rem 0;
+  gap: 0.25rem;
 }
 
-.logo {
+.header-right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.logo-mark {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none !important;
+}
+
+.logo-letter {
+  font-family: Georgia, "Times New Roman", ui-serif, serif;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  border-radius: 4px;
+  text-decoration: none !important;
+}
+
+.icon-btn:hover {
+  background: #f5f5f5;
+}
+
+.icon-btn-cart {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #c41e3a;
+  color: #fff;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  font-size: 1.1rem;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
 }
 
-.nav {
+.search-pop {
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0 0.85rem;
+  background: #fafafa;
+}
+
+.search-pop-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  max-width: 420px;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  font-size: 0.95rem;
+}
+
+.main-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem 1rem;
   justify-content: center;
-  padding: 0.35rem 0 0.85rem;
-  border-top: 1px solid var(--border);
+  align-items: center;
+  gap: 0.15rem 1.35rem;
+  padding: 0.5rem 0 0.85rem;
 }
 
-.nav a {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #222;
+.main-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #1a1a1a;
+  text-decoration: none !important;
+}
+
+.main-nav-link:hover {
+  opacity: 0.65;
+}
+
+.nav-chevron {
+  opacity: 0.55;
+  margin-top: 1px;
 }
 
 .promo {
   background: #111;
   color: #fff;
   text-align: center;
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  padding: 0.45rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  padding: 0.5rem 0.75rem;
 }
 
+/* —— WhatsApp FAB —— */
+.wa-fab {
+  position: fixed;
+  right: 1.1rem;
+  bottom: 1.1rem;
+  z-index: 50;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  text-decoration: none !important;
+}
+
+.wa-fab:hover {
+  filter: brightness(1.05);
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+  padding: 1.75rem 0 5rem;
+  text-align: center;
+}
+
+/* —— Collection / grid —— */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 1.35rem 1.1rem;
 }
 
 @media (max-width: 900px) {
@@ -106,46 +236,110 @@ img {
   }
 }
 
-.card {
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  overflow: hidden;
+.product-tile {
+  position: relative;
   background: #fff;
 }
 
-.card .meta {
-  padding: 0.75rem 0.85rem;
+.product-tile-link {
+  display: block;
+  text-decoration: none !important;
+}
+
+.product-tile-link:hover .product-tile-img-wrap {
+  opacity: 0.94;
+}
+
+.product-tile-img-wrap {
+  aspect-ratio: 1 / 1;
+  background: #f6f6f6;
+  overflow: hidden;
+}
+
+.product-tile-meta {
+  padding: 0.65rem 0.15rem 0.25rem;
+  text-align: left;
+}
+
+.product-tile-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #111;
+  line-height: 1.35;
+}
+
+.product-tile-price {
+  margin-top: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.product-tile-price .was {
+  text-decoration: line-through;
+  color: var(--muted);
+  font-weight: 500;
+  margin-right: 0.4rem;
 }
 
 .badge {
   position: absolute;
-  top: 0.65rem;
-  right: 0.65rem;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 2;
   background: #111;
   color: #fff;
-  font-size: 0.65rem;
-  letter-spacing: 0.08em;
-  padding: 0.25rem 0.45rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.28rem 0.45rem;
   text-transform: uppercase;
-}
-
-.price {
-  font-weight: 600;
-}
-
-.price .was {
-  text-decoration: line-through;
-  color: var(--muted);
-  font-weight: 500;
-  margin-right: 0.35rem;
 }
 
 .toolbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
+  flex-wrap: wrap;
   gap: 1rem;
-  margin: 1.25rem 0;
+  margin: 1.5rem 0 1.25rem;
+}
+
+.collection-title {
+  margin: 0;
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.collection-count {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.sort-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.sort-row label {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: #333;
+}
+
+.sort-select {
+  appearance: auto;
+  min-width: 150px;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  font-size: 0.82rem;
+  background: #fff;
 }
 
 .btn {
@@ -160,6 +354,12 @@ img {
   border-radius: 2px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none !important;
+}
+
+.btn:hover {
+  opacity: 0.92;
 }
 
 .btn:disabled {
@@ -172,18 +372,42 @@ img {
   color: #111;
 }
 
-.pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.25rem;
-  height: 1.25rem;
-  padding: 0 0.35rem;
-  border-radius: 999px;
-  background: #b00020;
-  color: #fff;
-  font-size: 0.7rem;
-  font-weight: 700;
+.btn-compact {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.82rem;
+}
+
+.cart-incentives {
+  border-bottom: 1px solid var(--border);
+  background: #fafafa;
+  padding: 0.85rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.cart-incentives-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.cart-incentives p {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: #333;
+}
+
+.progress-track {
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 35%;
+  background: #111;
+  border-radius: 2px;
 }
 
 .field {
@@ -248,4 +472,44 @@ img {
   border: 1px solid var(--border);
   padding: 1rem;
   background: #fafafa;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.price {
+  font-weight: 600;
+}
+
+.price .was {
+  text-decoration: line-through;
+  color: var(--muted);
+  font-weight: 500;
+  margin-right: 0.35rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #b00020;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.card .meta {
+  padding: 0.75rem 0.85rem;
 }
