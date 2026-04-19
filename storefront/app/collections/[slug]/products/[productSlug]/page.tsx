@@ -4,17 +4,17 @@ import { notFound } from "next/navigation";
 import AddToCart from "@/components/AddToCart";
 import { getProductBySlug } from "@/lib/api";
 
-type Props = { params: Promise<{ collectionSlug: string; productSlug: string }> };
+type Props = { params: Promise<{ slug: string; productSlug: string }> };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { collectionSlug, productSlug } = await props.params;
+  const { slug, productSlug } = await props.params;
   try {
     const p = await getProductBySlug(productSlug);
     const desc = (p.description || "").slice(0, 160);
     return {
       title: p.name,
       description: desc || `Buy ${p.name} at Zack Wears.`,
-      alternates: { canonical: `/collections/${collectionSlug}/products/${productSlug}` },
+      alternates: { canonical: `/collections/${slug}/products/${productSlug}` },
       openGraph: {
         title: p.name,
         description: desc,
@@ -27,7 +27,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage(props: Props) {
-  const { collectionSlug, productSlug } = await props.params;
+  const { slug, productSlug } = await props.params;
   let product: Awaited<ReturnType<typeof getProductBySlug>>;
   try {
     product = await getProductBySlug(productSlug);
@@ -41,7 +41,7 @@ export default async function ProductPage(props: Props) {
   return (
     <main className="container" style={{ padding: "1.5rem 0 3rem" }}>
       <p style={{ marginTop: 0 }}>
-        <Link href={`/collections/${collectionSlug}`} className="muted">
+        <Link href={`/collections/${slug}`} className="muted">
           ← Back to collection
         </Link>
       </p>
@@ -86,7 +86,7 @@ export default async function ProductPage(props: Props) {
             <div style={{ marginTop: "1rem", whiteSpace: "pre-wrap" }}>{product.description}</div>
           ) : null}
 
-          <AddToCart product={product} collectionSlug={collectionSlug} />
+          <AddToCart product={product} collectionSlug={slug} />
         </div>
       </div>
     </main>
