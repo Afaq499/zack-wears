@@ -9,10 +9,16 @@ function normalizeOrigin(url: string) {
 function expandLocalhostAliases(url: string): string[] {
   const u = normalizeOrigin(url);
   const out = new Set<string>([u]);
+
+  // Add localhost/127.0.0.1 aliases
   if (u.includes("://localhost:")) out.add(u.replace("://localhost:", "://127.0.0.1:"));
   if (u.includes("://127.0.0.1:")) out.add(u.replace("://127.0.0.1:", "://localhost:"));
   if (u.endsWith("://localhost")) out.add(u.replace("://localhost", "://127.0.0.1"));
   if (u.endsWith("://127.0.0.1")) out.add(u.replace("://127.0.0.1", "://localhost"));
+  
+  // Always include https://api.zackskyy.co/ as an allowed origin
+  out.add("https://api.zackskyy.co");
+
   return [...out];
 }
 
