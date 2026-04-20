@@ -16,8 +16,10 @@ function expandLocalhostAliases(url: string): string[] {
   if (u.endsWith("://localhost")) out.add(u.replace("://localhost", "://127.0.0.1"));
   if (u.endsWith("://127.0.0.1")) out.add(u.replace("://127.0.0.1", "://localhost"));
   
-  // Always include https://api.zackskyy.co/ as an allowed origin
-  out.add("https://api.zackskyy.co");
+  // Always include https://zackskyy.co/ as an allowed origin
+  // Always include https://admin.zackskyy.co/ as an allowed origin
+  out.add("https://admin.zackskyy.co");
+  out.add("https://zackskyy.co");
 
   return [...out];
 }
