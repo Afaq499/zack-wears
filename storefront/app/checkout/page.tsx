@@ -35,6 +35,9 @@ export default function CheckoutPage() {
     setError(null);
     setLoading(true);
     try {
+      if (!firstName.trim()) {
+        throw new Error("First name is required");
+      }
       const res = await fetch(`${apiBase}/api/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -48,7 +51,7 @@ export default function CheckoutPage() {
           shippingCost,
           shipping: {
             email,
-            firstName: firstName || undefined,
+            firstName: firstName.trim(),
             lastName: lastName || undefined,
             phone: phone || undefined,
             address1,
@@ -119,8 +122,8 @@ export default function CheckoutPage() {
             <input id="country" value={country} onChange={(e) => setCountry(e.target.value)} required />
           </div>
           <div className="field">
-            <label htmlFor="firstName">First name (optional)</label>
-            <input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+            <label htmlFor="firstName">First name</label>
+            <input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
           </div>
           <div className="field">
             <label htmlFor="lastName">Last name</label>

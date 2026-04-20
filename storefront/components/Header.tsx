@@ -65,8 +65,6 @@ export default function Header({ categories }: { categories: Category[] }) {
       ) : null}
 
       <MegaNav categories={categories} />
-
-      <div className="promo">7% OFF ON ADVANCE PAYMENT ORDERS</div>
     </header>
   );
 }
