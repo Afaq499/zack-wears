@@ -34,6 +34,17 @@ function buildAllowedOrigins(): Set<string> {
 
 const allowedOrigins = buildAllowedOrigins();
 
+function isZackskyyDomainOrigin(origin: string): boolean {
+  try {
+    const u = new URL(origin);
+    if (u.protocol !== "https:" && u.protocol !== "http:") return false;
+    const h = u.hostname.toLowerCase();
+    return h === "zackskyy.co" || h.endsWith(".zackskyy.co");
+  } catch {
+    return false;
+  }
+}
+
 /** In development, Vite may use 5174, 5175, etc. Allow any loopback HTTP origin. */
 function isLocalLoopbackDev(origin: string): boolean {
   if (process.env.NODE_ENV === "production") return false;
@@ -52,7 +63,11 @@ export const corsOptions: CorsOptions = {
       return;
     }
     const normalized = normalizeOrigin(origin);
-    if (allowedOrigins.has(normalized) || isLocalLoopbackDev(normalized)) {
+    if (
+      allowedOrigins.has(normalized) ||
+      isZackskyyDomainOrigin(normalized) ||
+      isLocalLoopbackDev(normalized)
+    ) {
       callback(null, origin);
       return;
     }
