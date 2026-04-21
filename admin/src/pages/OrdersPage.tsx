@@ -9,6 +9,14 @@ export default function OrdersPage() {
   const [error, setError] = useState<string | null>(null);
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
 
+  function displayLineName(li: Order["lineItems"][number]) {
+    const n = (li.name || "").trim();
+    if (n) return n;
+    const s = (li.slug || "").trim();
+    if (s) return s;
+    return li.productId;
+  }
+
   async function load() {
     const data = await api<Order[]>("/api/orders");
     setItems(data);
@@ -71,9 +79,9 @@ export default function OrdersPage() {
                       >
                         {isOpen ? "Hide items" : "Show items"}
                       </button>
-                      {o.lineItems[0]?.name ? (
+                      {o.lineItems[0] ? (
                         <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>
-                          {o.lineItems[0].name}
+                          {displayLineName(o.lineItems[0])}
                           {o.lineItems.length > 1 ? ` +${o.lineItems.length - 1} more` : ""}
                         </div>
                       ) : null}
@@ -124,7 +132,7 @@ export default function OrdersPage() {
 
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                   <div style={{ fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                    {li.name || "Unnamed item"}
+                                    {displayLineName(li)}
                                   </div>
                                   <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>
                                     Qty {li.quantity}
