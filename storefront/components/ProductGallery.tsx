@@ -15,8 +15,8 @@ export default function ProductGallery({ images, productName, maxThumbs = 4 }: P
   const activeSrc = safeImages[activeIdx] ?? safeImages[0] ?? "";
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "92px 1fr", gap: "0.75rem", alignItems: "start" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+    <div className="product-gallery">
+      <div className="product-gallery-thumbs">
         {safeImages.slice(0, maxThumbs).map((src, i) => {
           const active = i === activeIdx;
           return (
@@ -26,38 +26,19 @@ export default function ProductGallery({ images, productName, maxThumbs = 4 }: P
               onClick={() => setActiveIdx(i)}
               aria-label={`View image ${i + 1} of ${productName}`}
               aria-current={active ? "true" : undefined}
-              style={{
-                padding: 0,
-                border: active ? "2px solid var(--text)" : "1px solid var(--border)",
-                background: "transparent",
-                borderRadius: 2,
-                cursor: "pointer",
-              }}
+              className={`product-gallery-thumb ${active ? "is-active" : ""}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={src}
-                alt=""
-                style={{
-                  width: "100%",
-                  aspectRatio: "1 / 1",
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
+              <img src={src} alt="" className="product-gallery-thumb-img" />
             </button>
           );
         })}
       </div>
 
-      <div style={{ aspectRatio: "4 / 5", background: "#f4f4f4", border: "1px solid var(--border)" }}>
+      <div className="product-gallery-main">
         {activeSrc ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={activeSrc}
-            alt={productName}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+          <img src={activeSrc} alt={productName} className="product-gallery-main-img" />
         ) : null}
       </div>
     </div>

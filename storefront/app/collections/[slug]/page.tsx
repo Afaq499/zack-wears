@@ -36,7 +36,7 @@ export default async function CollectionPage(props: Props) {
   const { category, products } = data;
 
   return (
-    <main className="container" style={{ padding: "0.5rem 0 3rem" }}>
+    <main className="container" style={{ paddingTop: "0.5rem", paddingBottom: "3rem" }}>
       <div className="toolbar">
         <div>
           <h1 className="collection-title">{category.name}</h1>

@@ -51,7 +51,7 @@ export default async function ProductPage(props: Props) {
   }
 
   return (
-    <main className="container" style={{ padding: "1.5rem 0 3rem" }}>
+    <main className="container" style={{ paddingTop: "1.5rem", paddingBottom: "3rem" }}>
       <p style={{ marginTop: 0 }}>
         <Link href={`/collections/${slug}`} className="muted">
           ← Back to collection

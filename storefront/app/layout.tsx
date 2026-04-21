@@ -28,14 +28,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     categories = [];
   }
 
+  const year = new Date().getFullYear();
+
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Header categories={categories} />
         {children}
         <footer className="site-footer">
           <div className="container muted" style={{ fontSize: 13, letterSpacing: "0.04em" }}>
-            © {new Date().getFullYear()} Zack Wears
+            © {year} Zack Wears
           </div>
         </footer>
         <WhatsAppButton />
