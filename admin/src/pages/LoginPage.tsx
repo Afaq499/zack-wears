@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, setToken } from "../api";
+import logo from "../assets/logo.png";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -29,6 +30,11 @@ export default function LoginPage() {
 
   return (
     <div style={{ maxWidth: 420, margin: "4rem auto", padding: "0 1rem" }}>
+      <img
+        src={logo}
+        alt="Zack Wears"
+        style={{ width: 100, height: 100, objectFit: "contain", display: "block", margin: "0 auto 0.75rem" }}
+      />
       <h1 style={{ marginTop: 0 }}>Admin sign in</h1>
       <p className="muted">Use the credentials from your backend seed.</p>
       <form className="card stack" onSubmit={onSubmit}>

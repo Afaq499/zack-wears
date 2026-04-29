@@ -14,6 +14,10 @@ export const metadata: Metadata = {
     template: "%s · Zack Wears",
   },
   description: "Modern apparel, shoes, and accessories — fast delivery across Pakistan.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     type: "website",
     siteName: "Zack Wears",

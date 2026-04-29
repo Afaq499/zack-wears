@@ -1,12 +1,15 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { setToken } from "../api";
+import logo from "../assets/logo.png";
 
 export default function Layout() {
   const navigate = useNavigate();
   return (
     <div className="layout">
       <aside className="sidebar">
-        <div style={{ fontWeight: 700, marginBottom: "1rem" }}>Zack Wears</div>
+        <div className="sidebar-brand">
+          <img src={logo} alt="Zack Wears" className="sidebar-brand-logo" />
+        </div>
         <NavLink to="/products" className={({ isActive }) => (isActive ? "active" : "")}>
           Products
         </NavLink>
